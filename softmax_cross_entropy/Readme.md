@@ -1,0 +1,1 @@
+pytorch不支持one_hot形式的softmax_cross_entropy，自己定义得相关操作
