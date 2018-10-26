@@ -112,7 +112,7 @@ print("small net accuracy : ", accuracy(small_network)) #0.96785
 
 def distillation_loss_function(model_pred, teach_pred, target, T, alpha=0.9):
 	loss1=nn.KLDivLoss()(model_pred, teach_pred) * (T * T * alpha)
-	loss2=nn.NLLLoss()(torch.log(model_pred),target)*(1-alpah)
+	loss2=nn.NLLLoss()(torch.log(model_pred),target)*(1-alpha)
 	return loss1+loss2
 
 def distill(student, teacher, T, optimizer, nb_epochs=30, alpha=0.9):
