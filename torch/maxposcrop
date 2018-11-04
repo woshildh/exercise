@@ -1,0 +1,35 @@
+import torch
+from torch import nn
+import torch.nn.functional as F
+from torch.autograd import Variable
+
+class MaxPosCrop(nn.Module):
+	def __init__(self,crop_size=(7,7)):
+		super(MaxPosCrop,self).__init__()
+		self.crop_size=crop_size
+	def forward(self,x,max_pos):
+		b,c,h,w=x.size()
+		feature_maps=[]
+		for i in range(b):
+			xi=x[i].view(1,c,h,w)
+			pos=max_pos[i]
+			up=int(pos[0]-(self.crop_size[0]-1)/2)*(-1)
+			down=int(pos[0]+(self.crop_size[0]-1)/2)-h+1
+			left=int(pos[1]-(self.crop_size[1]-1)/2)*(-1)
+			right=int(pos[1]+(self.crop_size[1]-1)/2)-w+1
+			xi=F.pad(xi,(left,right,up,down),mode="constant",value=0)
+			feature_maps.append(xi)
+		feature_maps=torch.cat(feature_maps,dim=0)
+		return feature_maps
+if __name__=="__main__":
+	x=Variable(torch.randn(2,1024,14,14))
+	y=Variable(torch.randn(2,2048,7,7))
+	y=F.upsample(y,scale_factor=2,mode="bilinear")
+	m=MaxPosCrop()
+	b,c,h,w=y.size()
+	saliency=torch.mean(y,dim=1).view(2,-1)
+	_,max_pos=saliency.max(dim=1)
+	max_pos_h=(max_pos/h).view(b,1)
+	max_pos_w=(max_pos%h).view(b,1)
+	max_pos=torch.cat([max_pos_h,max_pos_w],dim=1).data.numpy()
+	print(m(x,max_pos))
