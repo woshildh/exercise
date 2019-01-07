@@ -1,0 +1,19 @@
+import threading,time
+
+def f(i):
+	print("This {} thread".format(i))
+	time.sleep(5)
+	return
+
+threads=[]
+#仅需 1s 输出所有东西
+for i in range(10):
+	t=threading.Thread(target=f,args=(i,))
+	threads.append(t)
+	t.start()
+#需要45s输出所有东西
+for i in range(10):
+	t=threading.Thread(target=f,args=(i,))
+	threads.append(t)
+	t.start()
+	t.join()  #这一行作用是阻塞主线程
