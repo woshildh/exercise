@@ -17,45 +17,32 @@ void bubbleSort(vector<int> & nums)
 		}
 	}
 }
-void quickSort(vector<int> & nums,int start,int end)
-{
-	if(start>=end)
-	{
-		return ;
+// 快速排序
+void quickSort(vector<int> &nums, int begin, int end) {
+	if(begin >= end) {
+	    return;
 	}
-	int length=nums.size();
-	int pos=start,left=start,right=end; //选择第一个作为base
-	while(left < right)
-	{
-		while(right>pos)
-		{
-			if(nums[right]<nums[pos])
-			{
-				swap(nums[right],nums[pos]);
-				pos=right;
-				right=end;
-				break;
-			}
-			else{
-				right--;
-			}
-		}
-		while(left<pos)
-		{
-			if(nums[left]>nums[pos])
-			{
-				swap(nums[left],nums[pos]);
-				pos=left;
-				left=start;
-				break;
-			}
-			else{
-				left++;
-			}
-		}
+	// 挑选随机数并且交换到前面
+	int pivot = rand() % (end - begin + 1);
+	swap(nums[begin], nums[begin + pivot]);
+	// 取出当前的随机数
+	int cur = nums[begin];
+	int left = begin, right = end;
+	while(left < right) {
+	    while(left < right && nums[right] > cur)
+		--right;
+	    if(left < right) {
+		nums[left++] = nums[right];
+	    }
+	    while(left < right && nums[left] < cur)
+		++left;
+	    if(left < right) {
+		nums[right--] = nums[left];
+	    }
 	}
-	quickSort(nums,start,pos-1);
-	quickSort(nums,pos+1,end);
+	nums[left] = cur;
+	quickSort(nums, begin, left - 1);
+	quickSort(nums, left + 1, end);
 }
 void build_heap(vector<int> &nums,int low,int high)
 {
