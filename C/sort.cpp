@@ -2,7 +2,7 @@
 #include<vector>
 #include<algorithm>
 using namespace std;
-
+// 冒泡排序
 void bubbleSort(vector<int> & nums)
 {
 	int length=nums.size();
@@ -15,6 +15,35 @@ void bubbleSort(vector<int> & nums)
 				swap(nums[j],nums[j-1]);
 			}
 		}
+	}
+}
+// 归并排序
+void mergeSort(vector<int>& nums, vector<int> &temp, int begin, int end) {
+	if(begin >= end)
+	    return;
+	// 递归对左右进行排序
+	int size = end - begin + 1;
+	int mid = begin + size / 2 - 1;
+	mergeSort(nums, temp, begin, mid);
+	mergeSort(nums, temp, mid + 1, end);
+	// 进行归并
+	int ptr = begin, ptr1 = begin, ptr2 = mid + 1;
+	while(ptr1 <= mid && ptr2 <= end) {
+	    if(nums[ptr1] < nums[ptr2]) {
+		temp[ptr++] = nums[ptr1++];
+	    } else {
+		temp[ptr++] = nums[ptr2++];
+	    }
+	}
+	while(ptr1 <= mid) {
+	    temp[ptr++] = nums[ptr1++];
+	}
+	while(ptr2 <= end) {
+	    temp[ptr++] = nums[ptr2++];
+	}
+	// 将临时数组中的值挪回原来的数组
+	for(int i = begin; i <= end; ++i) {
+	    nums[i] = temp[i];
 	}
 }
 // 快速排序
