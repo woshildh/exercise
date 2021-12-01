@@ -44,37 +44,40 @@ void quickSort(vector<int> &nums, int begin, int end) {
 	quickSort(nums, begin, left - 1);
 	quickSort(nums, left + 1, end);
 }
-void build_heap(vector<int> &nums,int low,int high)
-{
-	int last_leaf=(high-low+1)/2-1;
-	for(int i=last_leaf;i>=0;i--)
-	{
-		int left=2*i+1,right=2*i+2;
-		int pos;
-		if(right<=high)
-			pos=nums[left]>nums[right]?left:right;
-		else
-			pos=left;
-		//cout<<i<<" "<<left<<" "<<right<<" "<<pos<<endl;
-		if(nums[i] < nums[pos])
-		{
-			swap(nums[i],nums[pos]);
-		}
+// 堆排序
+void adjustHeap(vector<int> &nums, int idx, int size) {
+	int left = 2 * idx + 1, right = 2 * idx + 2;
+	// 求出左右节点最大值的位置
+	int max_pos = idx;
+	if(left < size && nums[left] > nums[max_pos]) {
+	    max_pos = left;
+	}
+	if(right < size && nums[right] > nums[max_pos]) {
+	    max_pos = right;
+	}
+	// 如果子节点的值大于根节点则进行交换
+	if(max_pos != idx) {
+	    // 交换根节点和子节点的值
+	    swap(nums[max_pos], nums[idx]);
+	    // 对子节点重新进行调整
+	    adjustHeap(nums, max_pos, size);
 	}
 }
-void heapsort(vector<int> &nums)
-{
-	int length=nums.size();
-	int k=0;
-	for(int i=length-1;i>0;i--)
-	{
-		build_heap(nums,0,i);
-		swap(nums[0],nums[i]);
-		for(int i=0;i<nums.size();i++)
-		{
-			cout<<nums[i]<<" ";
-		}
-		cout<<endl;
+void heapSort(vector<int> &nums) {
+	int size = nums.size();
+	if(size <= 1) 
+	    return;
+	int max_no_leaf = size / 2 - 1;  //最后一个非叶子节点
+	// 首先建立堆
+	for(int i = max_no_leaf; i >= 0; --i) {
+	    adjustHeap(nums, i, size);
+	}
+	// 调整堆
+	for(int i = nums.size() - 1; i > 0; --i) {
+	    // 将最大的值放到数组的最后
+	    swap(nums[0], nums[i]);
+	    // 调整堆
+	    adjustHeap(nums, 0, i);
 	}
 }
 int main()
